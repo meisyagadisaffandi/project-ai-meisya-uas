@@ -50,7 +50,7 @@
       transition: background-color 0.3s ease;
     }
     button:hover {
-      background-color: #1f47a5;
+      background-color: #153378;
     }
     .result {
       margin-top: 20px;
@@ -58,26 +58,23 @@
       font-weight: bold;
       text-align: center;
     }
-       /* Styling tombol back di pojok bawah kanan */
-    #backButton {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: auto;
-      padding: 10px 16px;
-      background-color: #888;
-      border-radius: 8px;
-      border: none;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      transition: background-color 0.3s ease;
-      z-index: 1000;
-    }
-    #backButton:hover {
-      background-color: #555;
-    }
+
+#backButton {
+  padding: 4px 8px;
+  font-size: 12px;
+  background-color: #888;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  display: inline-block;
+  width: auto; /* biar background-nya tidak melebar */
+}
+#backButton:hover {
+  background-color: #555;
+}
+
+
   </style>
 </head>
 <body>
@@ -86,13 +83,17 @@
     <p>Masukkan kalimat yang ingin dianalisis:</p>
     <textarea id="inputText" placeholder="Contoh: Saya sangat kecewa dengan produk ini."></textarea>
     <button onclick="klasifikasi()">Klasifikasi</button>
-    <div class="result" id="result"></div>
+<div class="result" id="result"></div>
+<div style="text-align: left;">
+<button id="backButton" onclick="window.location.href='index.html'">← Kembali</button>
+
+</div>
+
+
   </div>
-  <!-- Tombol Back -->
-  <button id="backButton" onclick="window.history.back()">Back</button>
+
   <script>
     const dataLatih = [
-      // POSITIF
       { teks: "saya senang sekali", label: "positif" },
       { teks: "hari ini menyenangkan dan bahagia", label: "positif" },
       { teks: "aku merasa puas dan senang", label: "positif" },
@@ -105,7 +106,6 @@
       { teks: "pengiriman cepat dan aman", label: "positif" },
       { teks: "bagus", label: "positif" },
 
-      // NEGATIF
       { teks: "saya sangat kecewa", label: "negatif" },
       { teks: "ini adalah hari yang buruk", label: "negatif" },
       { teks: "aku merasa sedih dan marah", label: "negatif" },
@@ -115,8 +115,8 @@
       { teks: "saya tidak puas sama sekali", label: "negatif" },
       { teks: "respon customer service sangat buruk", label: "negatif" },
       { teks: "pengiriman sangat lambat", label: "negatif" },
-       { teks: "buruk", label: "negatif" },
-             { teks: "jelek", label: "negatif" },
+      { teks: "buruk", label: "negatif" },
+      { teks: "jelek", label: "negatif" },
       { teks: "barang rusak saat diterima", label: "negatif" }
     ];
 
@@ -146,6 +146,14 @@
 
     function klasifikasi() {
       const input = document.getElementById("inputText").value;
+      const resultEl = document.getElementById("result");
+
+      if (input.trim() === "") {
+        resultEl.innerText = "Silakan masukkan komentar terlebih dahulu.";
+        resultEl.style.color = "#c62828";
+        return;
+      }
+
       const tokens = tokenisasi(input);
       const { kelas, kataPerKelas, totalDokumen } = pelatihanNaiveBayes(dataLatih);
 
@@ -153,21 +161,19 @@
 
       for (const label in kelas) {
         const totalKata = Object.values(kataPerKelas[label]).reduce((a, b) => a + b, 0);
-        skor[label] = Math.log(kelas[label] / totalDokumen); // prior
+        skor[label] = Math.log(kelas[label] / totalDokumen);
 
         tokens.forEach(token => {
           const frek = kataPerKelas[label][token] || 0;
-          const prob = (frek + 1) / (totalKata + 1); // Laplace smoothing
+          const prob = (frek + 1) / (totalKata + 1);
           skor[label] += Math.log(prob);
         });
       }
 
       const hasil = Object.entries(skor).sort((a, b) => b[1] - a[1])[0][0];
-      const resultEl = document.getElementById("result");
       resultEl.innerText = "Hasil klasifikasi: " + hasil.toUpperCase();
       resultEl.style.color = hasil === "positif" ? "#1f47a5" : "#c62828";
     }
   </script>
 </body>
-     
 </html>
