@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Beranda Klasifikasi Komentar</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #1f47a5, #764ba2);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #ffffff;
+    }
+
+    .container {
+      text-align: center;
+      background-color: rgba(0, 0, 0, 0.35);
+      padding: 40px 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      max-width: 400px;
+      width: 90%;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    p {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+      line-height: 1.4;
+    }
+
+    .start-button {
+      display: inline-block;
+      padding: 14px 28px;
+      background-color: #ffffff;
+      color: #333333;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1em;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .start-button:hover,
+    .start-button:focus {
+      background-color: #eeeeee;
+      color: #000000;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" role="main">
+    <h1>Selamat Datang </h1>
+    <p>Sistem Klasifikasi Komentar Positif dan Negatif<br />menggunakan Naive Bayes</p>
+    <a href="mei.html" class="start-button" aria-label="Mulai klasifikasi komentar">Mulai</a>
+  </div>
+</body>
+</html>

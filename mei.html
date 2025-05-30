@@ -58,6 +58,26 @@
       font-weight: bold;
       text-align: center;
     }
+       /* Styling tombol back di pojok bawah kanan */
+    #backButton {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: auto;
+      padding: 10px 16px;
+      background-color: #888;
+      border-radius: 8px;
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: background-color 0.3s ease;
+      z-index: 1000;
+    }
+    #backButton:hover {
+      background-color: #555;
+    }
   </style>
 </head>
 <body>
@@ -68,7 +88,8 @@
     <button onclick="klasifikasi()">Klasifikasi</button>
     <div class="result" id="result"></div>
   </div>
-
+  <!-- Tombol Back -->
+  <button id="backButton" onclick="window.history.back()">Back</button>
   <script>
     const dataLatih = [
       // POSITIF
