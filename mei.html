@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Klasifikasi Komentar Negatif dan Positif</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f7f9fc;
+      margin: 0;
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+    }
+    .container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 600px;
+    }
+    h2 {
+      margin-top: 0;
+      text-align: center;
+      color: #333;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      resize: none;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 16px;
+      font-size: 16px;
+      background-color: #1f47a5;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #1f47a5;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 1.3em;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Klasifikasi Komentar Negatif dan Positif</h2>
+    <p>Masukkan kalimat yang ingin dianalisis:</p>
+    <textarea id="inputText" placeholder="Contoh: Saya sangat kecewa dengan produk ini."></textarea>
+    <button onclick="klasifikasi()">Klasifikasi</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    const dataLatih = [
+      // POSITIF
+      { teks: "saya senang sekali", label: "positif" },
+      { teks: "hari ini menyenangkan dan bahagia", label: "positif" },
+      { teks: "aku merasa puas dan senang", label: "positif" },
+      { teks: "Produk yang bagus", label: "positif" },
+      { teks: "pelayanan yang sangat baik", label: "positif" },
+      { teks: "hasilnya memuaskan dan indah", label: "positif" },
+      { teks: "pengalaman yang menyenangkan", label: "positif" },
+      { teks: "aku suka kualitas produk ini", label: "positif" },
+      { teks: "sangat direkomendasikan", label: "positif" },
+      { teks: "pengiriman cepat dan aman", label: "positif" },
+      { teks: "bagus", label: "positif" },
+
+      // NEGATIF
+      { teks: "saya sangat kecewa", label: "negatif" },
+      { teks: "ini adalah hari yang buruk", label: "negatif" },
+      { teks: "aku merasa sedih dan marah", label: "negatif" },
+      { teks: "aku kecewa dengan hasilnya", label: "negatif" },
+      { teks: "Produk yang buruk", label: "negatif" },
+      { teks: "pelayanan sangat lambat dan mengecewakan", label: "negatif" },
+      { teks: "saya tidak puas sama sekali", label: "negatif" },
+      { teks: "respon customer service sangat buruk", label: "negatif" },
+      { teks: "pengiriman sangat lambat", label: "negatif" },
+       { teks: "buruk", label: "negatif" },
+             { teks: "jelek", label: "negatif" },
+      { teks: "barang rusak saat diterima", label: "negatif" }
+    ];
+
+    function tokenisasi(teks) {
+      return teks.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/);
+    }
+
+    function pelatihanNaiveBayes(data) {
+      const kelas = {};
+      const kataPerKelas = {};
+      const totalDokumen = data.length;
+
+      data.forEach(({ teks, label }) => {
+        const tokens = tokenisasi(teks);
+        if (!kelas[label]) {
+          kelas[label] = 0;
+          kataPerKelas[label] = {};
+        }
+        kelas[label]++;
+        tokens.forEach(token => {
+          kataPerKelas[label][token] = (kataPerKelas[label][token] || 0) + 1;
+        });
+      });
+
+      return { kelas, kataPerKelas, totalDokumen };
+    }
+
+    function klasifikasi() {
+      const input = document.getElementById("inputText").value;
+      const tokens = tokenisasi(input);
+      const { kelas, kataPerKelas, totalDokumen } = pelatihanNaiveBayes(dataLatih);
+
+      const skor = {};
+
+      for (const label in kelas) {
+        const totalKata = Object.values(kataPerKelas[label]).reduce((a, b) => a + b, 0);
+        skor[label] = Math.log(kelas[label] / totalDokumen); // prior
+
+        tokens.forEach(token => {
+          const frek = kataPerKelas[label][token] || 0;
+          const prob = (frek + 1) / (totalKata + 1); // Laplace smoothing
+          skor[label] += Math.log(prob);
+        });
+      }
+
+      const hasil = Object.entries(skor).sort((a, b) => b[1] - a[1])[0][0];
+      const resultEl = document.getElementById("result");
+      resultEl.innerText = "Hasil klasifikasi: " + hasil.toUpperCase();
+      resultEl.style.color = hasil === "positif" ? "#1f47a5" : "#c62828";
+    }
+  </script>
+</body>
+     
+</html>
